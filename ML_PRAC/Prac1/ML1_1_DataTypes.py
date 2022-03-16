@@ -156,15 +156,18 @@ ordered, changeable, do not allow duplicates
 # D.pop('id') # key값 지정하여 item 제거 및 저장
 # print(D) # item 제거된 모습 확인
 
+
 '''
 <5. Files>
 File object
     for interacting with files
+    
+    Mode : 'r', 'w', 'a ( append )', 'x ( create )'
 '''
 
 # f = open('ML1_2_FileObject.txt','w') #쓰기전용
 # f.write('Hello text files and')
-# f.write(' world!\t')
+# f.write(' world!')
 # f.close()
 
 # f = open('ML1_2_FileObject.txt','r') #default 모드는 read
@@ -172,6 +175,16 @@ File object
 # print(fileObject)
 # f.close()
 
+# f = open('ML1_1_FileObject.txt','a') # a : append Mode
+# f.write(', I\'ts me HorizD!')
+# f.close()
+# f = open('ML1_1_FileObject.txt','r')
+# fileObject = f.read()
+# print(fileObject)
 
-
-
+# f = open('ML1_1_FileObjectCreated.txt','x')
+# f.write('Create new one in new named file')
+# f.close()
+# f = open('ML1_1_FileObjectCreated.txt','r')
+# fileObject = f.read()
+# print(fileObject)
