@@ -12,11 +12,12 @@
 # getLength()
 
 # 3. quadraticRoot
+import math
 def quadraticRoot() :
-    inVal: int = int(input('Enter two coefficients of x2(= a) and x (= b) and value of the constant (= c), respectively : '))
-    q_root1: float = 0
-    q_root2: float = 0
-    print('The solutions include %0.1f and %0.1f'%(q_root1,q_root2))    
+    a,b,c = map(int, input('Enter two coefficients of x2 and x, and value of a constant, separating by space, respectively : ').split())
+    q_root1: float = ( (-b + (math.sqrt(b**2 - 4*a*c))) / 2*a)
+    q_root2: float = ( (-b - (math.sqrt(b**2 - 4*a*c))) / 2*a)
+    print('The solutions include %0.1f and %0.1f'%(q_root1,q_root2))
 quadraticRoot()
 
 # # 4. calcDistance - 완료
