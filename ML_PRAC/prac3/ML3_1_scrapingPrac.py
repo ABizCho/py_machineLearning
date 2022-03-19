@@ -237,11 +237,11 @@ urlopen().close() : 연결을 닫는다
 '''
 # html 소스 상 링크를 탐색 반환
 
-from urllib.request import urlopen
-from bs4 import BeautifulSoup 
+# from urllib.request import urlopen
+# from bs4 import BeautifulSoup 
 
-html = urlopen('https://en.wikipedia.org/wiki/BTS')
-bs = BeautifulSoup(html, 'html.parser')
-for link in bs.find_all('a'):
-    if 'href' in link.attrs:
-        print(link.attrs['href'])
+# html = urlopen('https://en.wikipedia.org/wiki/BTS')
+# bs = BeautifulSoup(html, 'html.parser')
+# for link in bs.find_all('a'):
+#     if 'href' in link.attrs:
+#         print(link.attrs['href'])
