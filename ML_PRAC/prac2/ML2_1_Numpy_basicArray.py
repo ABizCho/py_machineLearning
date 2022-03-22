@@ -185,5 +185,8 @@ except :
     print('전후 items 사이즈가 다르므로 에러를 출력합니다.')
     
 sp()
-arr_minusOne = arr_befSp.reshape(4,-1)
+arr_minusOne = arr_befSp.reshape(5,-1)
 print(arr_minusOne)
+
+
+
