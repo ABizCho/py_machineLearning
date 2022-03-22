@@ -17,6 +17,7 @@ from stylemod import *
       
       간단 튜토리얼 : https://teddylee777.github.io/python/numpy-tutorial
       심화 튜토리얼 : http://aikorea.org/cs231n/python-numpy-tutorial/#numpy-arrays
+      조작 메서드 튜토리얼 : https://ddolcat.tistory.com/697
                  
 '''
 
