@@ -38,16 +38,17 @@ print( df, type(df) ) #위5/아래5로 요약되어서 출력됨
 sp()
 print( pd.options.display.max_rows ) # pd의 MAX 출력속성값 확인 : default값은 60
 
-sp()
-pd.options.display.max_rows = 9999 # pd의 Max 출력속성값 변경할당 : 기본값을 변경 to 9999
 print(df) # 전체 출력
 
+sp()
+print(df.info)
 
 '''
 3. 시각화 : Basic Visualization 
     
     ( using matplotlib.pyplot )
 '''
+div(3)
 import matplotlib.pyplot as plt
 
 df = pd.read_csv('data.csv')
