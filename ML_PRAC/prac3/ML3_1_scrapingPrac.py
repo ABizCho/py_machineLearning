@@ -231,7 +231,7 @@ urlopen().close() : 연결을 닫는다
 #     print(TAG)
 
 
-
+ 
 ''''
 #URL Link Crawler
 '''
