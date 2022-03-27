@@ -34,7 +34,7 @@ df = pd.read_csv('data.csv')
 print( df, type(df) ) #위5/아래5로 요약되어서 출력됨
 
 
-# dataframe의 요약출력을 전체출력으로 변경하기    
+# dataframe의 요약출력을 전체출력으로 변경하기
 sp()
 print( pd.options.display.max_rows ) # pd의 MAX 출력속성값 확인 : default값은 60
 
