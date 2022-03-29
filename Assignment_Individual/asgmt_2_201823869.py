@@ -90,6 +90,7 @@ div(4,'Q3')
 
 print('The highest value of "OvertimePay" : ', df_sal['OvertimePay'].astype('float64').max())
 
+
 '''
 Q4.
 What is the job title of the observation, “JOSEPH DRISCOLL”? Tip: Use all capitalized letters to search the name. 
@@ -98,7 +99,7 @@ has another observation of “Joseph Driscoll” with the first letters of each 
 '''
 div(5,'Q4')
 
-print('The jobtitle of JOSEPH DRISCOLL : ', df_sal[ df_sal['EmployeeName'] == 'JOSEPH DRISCOLL']['JobTitle'].values)
+print('The jobtitle of JOSEPH DRISCOLL : ', df_sal[ df_sal['EmployeeName'] == 'JOSEPH DRISCOLL']['JobTitle'].values[0])
 
 
 '''
@@ -130,12 +131,17 @@ print('The total pay benefits Joe lopez was paid : ', df_sal[df_sal['TotalPayBen
 
 print('\n# It is weired Joe Lopez was paid minus $')
 
+
 '''
 Q8.
 How many unique job titles can we see in the data set?
 '''
 div(9,'Q8')
 
+unq_jt = df_sal.groupby('JobTitle')['Id'].count()[df_sal.groupby('JobTitle')['Id'].count() == 1] # 취합개수 1 여부 참거짓 에 따른 직업 반환
+# print(unq_jt.keys()) # 유니크 직업 인덱스 출력
+
+print('Num of Unique JobTitles : ', unq_jt.count()) # 개수 출력
 
 
 '''
@@ -144,6 +150,9 @@ What are the top 5 job titles we can most frequently see in the data set?
 '''
 div(10,'Q9')
 
+jt_top5frq = df_sal.groupby('JobTitle')['Id'].count().sort_values(ascending=False)[0:5]
+print('<< Top 5 the most frequent job titles >> \n\n', jt_top5frq)
+
 
 '''
 Q10.
@@ -151,12 +160,38 @@ How many job titles were occupied by a single person only in 2013?
 '''
 div(11,'Q10')
 
+df_sal_2013 = df_sal[df_sal['Year'] == 2013]
+
+jt_ocpBySingle = df_sal_2013.groupby('JobTitle')['Id'].count()[df_sal_2013.groupby('JobTitle')['Id'].count() == 1]
+print('Num of Job titles occupied by a single person in 2013 : ', jt_ocpBySingle.count())
 
 '''
 Q11.
 How many people have the word “Chief” in their job titles?
 '''
+    # ref : 
+        # 파이썬 정규표현식 탐색 : https://ponyozzang.tistory.com/279
 div(12,'Q11')
+
+from re import search
+
+# # 문제의 'How many people'의 모호함 해소를 위해 이름이 중복되는 레코드 확인 
+# df_groupByEmpName = df_sal.groupby('EmployeeName')['Id'].count()[df_sal.groupby('EmployeeName')['Id'].count() >= 2 ]
+# print('2 이상 중복된 이름의 수 : ',len(df_groupByEmpName)) 
+
+## 이름이 두번 이상 중복되는 레코드가 대략 34273개로 너무 큰 수가 존재 하므로, 이를 동명이인으로 가정하고 동일인 중복에 대한 고려 없이 모든 레코드에 대해 Chief를 조사하여 이 수를 해당 문제에 대한 답으로 정하도록 하겠습니다.
+
+
+# 개수 확인
+
+cnt_chief = 0
+df_sal_jt = df_sal['JobTitle'].values.astype('str')
+
+for job in df_sal_jt :
+    if search(r'CHIEF',job) != None :
+        cnt_chief += 1
+
+print('Num of "CHIEF" job titles : ', cnt_chief)
 
 
 '''
