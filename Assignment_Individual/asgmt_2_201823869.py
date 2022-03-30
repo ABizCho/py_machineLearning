@@ -17,6 +17,7 @@ Exploring Data
 div(1,'Exploring')
 
 # (1) import modules and set env
+from tkinter import font
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -57,14 +58,13 @@ div(1,'Cleaning')
 df_sal = df_sal[df_sal.columns.difference(['Notes','Agency','Status'])]
 print('Selected Columns : ',df_sal.columns.values) 
 
-# (2) df_sal에서 Not Provided 값 제외하여 저장
+# (2) df_sal에서 Not Provided : str 값 제외하여 저장
 sp()
 df_sal = df_sal[df_sal['BasePay'] != 'Not Provided']
 print('Len of df_sal excluded Not Provided : ', len(df_sal))
 
-# (3) 
-sp()
-
+# (3) df_sal에서 na값은 무분별하게 제거했을 시 일부 문제에 error를 야기한다 
+    # 따라서 현재 시점에선 따로 처리하지 않고 향후 문제 풀이에서 필요에 따라 처리한다.
 
 '''
 Q1.
@@ -109,6 +109,7 @@ How much has “JOSEPH DRISCOLL” earned (including the variable “Benefits”
 div(6,'Q5')
 
 print('JOSEPH DRISCOLL earned : ', df_sal[df_sal['EmployeeName'] == 'JOSEPH DRISCOLL']['TotalPayBenefits'].values[0])
+
 
 '''
 Q6.
@@ -165,6 +166,7 @@ df_sal_2013 = df_sal[df_sal['Year'] == 2013]
 jt_ocpBySingle = df_sal_2013.groupby('JobTitle')['Id'].count()[df_sal_2013.groupby('JobTitle')['Id'].count() == 1]
 print('Num of Job titles occupied by a single person in 2013 : ', jt_ocpBySingle.count())
 
+
 '''
 Q11.
 How many people have the word “Chief” in their job titles?
@@ -179,7 +181,7 @@ from re import search
 # df_groupByEmpName = df_sal.groupby('EmployeeName')['Id'].count()[df_sal.groupby('EmployeeName')['Id'].count() >= 2 ]
 # print('2 이상 중복된 이름의 수 : ',len(df_groupByEmpName)) 
 
-## 이름이 두번 이상 중복되는 레코드가 대략 34273개로 너무 큰 수가 존재 하므로, 이를 동명이인으로 가정하고 동일인 중복에 대한 고려 없이 모든 레코드에 대해 Chief를 조사하여 이 수를 해당 문제에 대한 답으로 정하도록 하겠습니다.
+## 이름이 두번 이상 중복되는 레코드가 대략 34273개로 너무 큰 수가 존재 하므로, 이 모든 중복을 동명이인으로 가정하고 동일인 중복에 대한 고려 없이 모든 레코드에 대해 Chief를 조사 및 카운트하여 이 수를 해당 문제에 대한 답으로 정하도록 하겠습니다.
 
 
 # 개수 확인
@@ -199,7 +201,36 @@ Q12.
 Visualize a histogram to show the distribution of the variable “TotalPay” with all the 
 observations in the data set.
 '''
+# ref : 
+    # 서브플롯 : https://teddylee777.github.io/visualization/matplotlib-tutorial
+    # 서브플롯 타이틀 : https://www.delftstack.com/ko/howto/matplotlib/how-to-add-title-to-subplots-in-matplotlib/
+    
+    # 히스토그램 특정 구간 강조 : https://velog.io/@khnn/TIL-Matplotlib%EC%9C%BC%EB%A1%9C-%ED%9E%88%EC%8A%A4%ED%86%A0%EA%B7%B8%EB%9E%A8-%EA%BE%B8%EB%AF%B8%EA%B8%B0
+    
+    # 
 div(13,'Q12')
+import matplotlib.pyplot as plt
+
+
+plt.style.use('Solarize_Light2')
+
+fig, ax = plt.subplots(2, 1)
+
+n,bins,patches = ax[0].hist(df_sal['TotalPay'],edgecolor='black',linewidth=1.2 )
+patches[1].set_facecolor('gold')
+
+n,bins,patches = ax[1].hist(df_sal['TotalPay'],edgecolor='black',linewidth=1.2,bins=30 )
+patches[0].set_facecolor('gold')
+patches[3].set_facecolor('gold')
+
+ax[0].set_title("Histogram of TotalPay (default)")
+ax[1].set_title("Histogram of TotalPay (bins=30)")
+
+plt.xlabel('TotalPay')
+plt.ylabel('Count of records')
+
+fig.set_size_inches(9, 9)
+plt.show()
 
 
 '''
@@ -207,7 +238,37 @@ Q13.
 Visualize a line chart where the x-axis indicates the year (over time) whereas the y-axis indicates 
 the average “TotalPay” of all the observations.
 '''
+# ref : 
+    # linear graph styling(goodRef): https://zephyrus1111.tistory.com/21
 div(14,'Q13')
+
+
+TP_year = df_sal.groupby('Year').mean().index.values
+TP_avg = df_sal.groupby('Year').mean()['TotalPay'].values
+
+xpoints = TP_year
+ypoints = TP_avg
+
+
+fig = plt.figure(figsize=(7,7)) # canvas
+ax = fig.add_subplot()          # frame
+
+ax.spines['right'].set_visible(False) # unvisible right spine
+ax.spines['top'].set_visible(False) # # unvisible top spine
+
+ax.plot(xpoints,ypoints, 'g', marker='o',linestyle='--')
+
+ax.axhline( TP_avg.mean(), label='mean')
+ax.text(2011,TP_avg.mean()+20, 'Mean : %f'%(TP_avg.mean()),fontsize=9,color='gray')
+
+plt.title('Avgs of TotalPay by years')
+
+plt.xticks(TP_year)
+plt.yticks(TP_avg)
+
+plt.xlabel('Years')
+plt.ylabel('Averages of whole TotalPay')
+plt.show()
 
 
 '''
@@ -215,4 +276,26 @@ Q14.
 Visualize a bar chart with the counts of observations across the three different ranges of 
 the variable “TotalPay”: i.e., low, medium, high salaries.
 '''
+# + There is no standard for ranging class (high,medium,low), so I used pd.cut() method for classifying the level
+
+    # ref: 
+        # qcut() 메소드 : https://pandas.pydata.org/docs/reference/api/pandas.cut.html
+
 div(15,'Q14')
+
+
+df_sal['pay_class'] = pd.cut(df_sal['TotalPay'],3, labels=['low','medium','high'])
+
+df_sal_class = df_sal.groupby('pay_class')['pay_class'].count()
+
+print('There is no standard for grading levels (high,medium,low), so I used pd.cut() method for classifying the level')
+
+
+plt.bar(df_sal_class.index.values,df_sal_class.values)
+plt.xlabel('TotalPay Class')
+plt.ylabel('Count of obs')
+
+plt.title('Counts by different TotalPay classes')
+
+plt.show()
+
