@@ -30,16 +30,16 @@ currDir = os.getcwd()
 df_sal = pd.read_csv('Salaries.csv',encoding='CP949')
 
 # (3) summary
-print(df_sal.head()) # 상위 레코드
+print(df_sal.head()) # heads for summary
 
 sp()
-df_sal.info() # 정보
+df_sal.info() # information
 
 sp()
-print(df_sal.describe()) # 요약 통계량
+print(df_sal.describe()) # summaries for describing
 
 
-# (4) 결측값 및 이상값 탐색
+# (4) Exploring missing values and outliers
 sp()
 print('Num of Not Provided : ', len(df_sal[df_sal['BasePay'] == 'Not Provided'])) # 'Not Provided' 값을 지닌 Data 개수 탐색 : 4개
 
@@ -52,13 +52,13 @@ Cleaning Data
 '''
 div(1,'Cleaning')
 
-# (1) 불필요한 컬럼 제외한 df 재구성
+# (1) Excluding unnecessary columns
     # ref 
         # 특정 컬럼 제외 : https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=wideeyed&logNo=221250746480
 df_sal = df_sal[df_sal.columns.difference(['Notes','Agency','Status'])]
 print('Selected Columns : ',df_sal.columns.values) 
 
-# (2) df_sal에서 Not Provided : str 값 제외하여 저장
+# (2) df_sal에서 Not Provided(str) 값 제외하여 저장
 sp()
 df_sal = df_sal[df_sal['BasePay'] != 'Not Provided']
 print('Len of df_sal excluded Not Provided : ', len(df_sal))
@@ -71,6 +71,13 @@ Q1.
 Generate texts with a couple of sentences that describe the data set based on your empirical insight and statistical approach.  
 '''
 div(2,'Q1')
+
+print('# 1. There is too many outliers in the boxplot made in my additional analysis part.')
+print('# 2. Q12-histogram is skewed to left. and Few people earned more than 200000.')
+print('# 3. Q14-bar chart show there is few people who are classified in "high class" , even in "medium class"')
+print('# 4. From 1, 2, and 3, we can presume that there is huge gap in paying.')
+print('# 5. Top3 the most paid jobtitle is "Chief Investment Officer","Chief of Police, and "Chief, Fire Department"')
+print('# 6. At least in my results of analysis like #5, the people whose jobtitle has the word "chief" tend to be paid more than others ')
 
 
 '''
@@ -177,15 +184,15 @@ div(12,'Q11')
 
 from re import search
 
-# # 문제의 'How many people'의 모호함 해소를 위해 이름이 중복되는 레코드 확인 
+## 문제의 'How many people'의 모호함 해소를 위해 이름이 중복되는 레코드 확인 
 # df_groupByEmpName = df_sal.groupby('EmployeeName')['Id'].count()[df_sal.groupby('EmployeeName')['Id'].count() >= 2 ]
 # print('2 이상 중복된 이름의 수 : ',len(df_groupByEmpName)) 
 
-## 이름이 두번 이상 중복되는 레코드가 대략 34273개로 너무 큰 수가 존재 하므로, 이 모든 중복을 동명이인으로 가정하고 동일인 중복에 대한 고려 없이 모든 레코드에 대해 Chief를 조사 및 카운트하여 이 수를 해당 문제에 대한 답으로 정하도록 하겠습니다.
+## There is too many cases that record names are overlapped. so, I'll assume that the whole overlapped record names are homonym cases and exclude preprocessing for this.
+## ( 이름이 두번 이상 중복되는 레코드가 대략 34273개로 너무 큰 수가 존재 하므로, 이 모든 중복을 동명이인으로 가정하고 동일인 중복에 대한 고려 없이 모든 레코드에 대해 Chief를 조사 및 카운트하여 이 수를 해당 문제에 대한 답으로 정하도록 하겠습니다. )
 
 
 # 개수 확인
-
 cnt_chief = 0
 df_sal_jt = df_sal['JobTitle'].values.astype('str')
 
@@ -207,7 +214,6 @@ observations in the data set.
     
     # 히스토그램 특정 구간 강조 : https://velog.io/@khnn/TIL-Matplotlib%EC%9C%BC%EB%A1%9C-%ED%9E%88%EC%8A%A4%ED%86%A0%EA%B7%B8%EB%9E%A8-%EA%BE%B8%EB%AF%B8%EA%B8%B0
     
-    # 
 div(13,'Q12')
 import matplotlib.pyplot as plt
 
@@ -276,26 +282,91 @@ Q14.
 Visualize a bar chart with the counts of observations across the three different ranges of 
 the variable “TotalPay”: i.e., low, medium, high salaries.
 '''
-# + There is no standard for ranging class (high,medium,low), so I used pd.cut() method for classifying the level
-
-    # ref: 
-        # qcut() 메소드 : https://pandas.pydata.org/docs/reference/api/pandas.cut.html
-
 div(15,'Q14')
 
+# + There is no standard for dividing class interval (high,medium,low), so I used 2 different ways. 
+            # 1.  pd.cut() method by default options
+            # 2.  Dividing 3 class in the same range of value ( Using cut() method too) 
 
+fig, ax = plt.subplots(2, 1)
+
+# WAY 1.
+    # pd.cut() method by default options
 df_sal['pay_class'] = pd.cut(df_sal['TotalPay'],3, labels=['low','medium','high'])
 
 df_sal_class = df_sal.groupby('pay_class')['pay_class'].count()
 
-print('There is no standard for grading levels (high,medium,low), so I used pd.cut() method for classifying the level')
+ax[0].bar(df_sal_class.index.values,df_sal_class.values)
+
+ax[0].set_title('Way 1 : Dividing classes by default cut() options')
 
 
-plt.bar(df_sal_class.index.values,df_sal_class.values)
+# WAY 2.
+    # Dividing 3 class in the same range of value ( Using cut() method too) 
+
+endP = int(df_sal['TotalPay'].max())
+startP = int(df_sal['TotalPay'].min())
+
+
+intv = int((endP - startP) / 3)
+
+bins = range(startP,endP,intv)
+bins_label = ['low','medium','high']
+
+df_sal['pay_class'] = pd.cut( df_sal['TotalPay'], bins,right=False, labels=bins_label )
+
+ax[1].bar(df_sal_class.index.values,df_sal_class.values)
+ax[1].set_title('Way 2 : Dividing classes by the same range of value')
+
+
+
 plt.xlabel('TotalPay Class')
 plt.ylabel('Count of obs')
 
-plt.title('Counts by different TotalPay classes')
+print('Showing Counts of classes of Total pay bar chart...')
 
+fig.set_size_inches(9, 9)
 plt.show()
 
+print('\nOpinion : I figured out the pd.cut() method runs similarly with my way2 formula.\n')
+
+
+
+
+
+'''
++ Additional Analysis and Visualization
+'''
+
+# Additional 1 : Boxplot of TotalPay
+div(16,'Additional Analysis 1 : BoxPlot of TotalPay')
+plt.style.use('seaborn-dark')
+
+plt.boxplot(df_sal['TotalPay'], showmeans=True)
+plt.title('Additional Analysis 1 : BoxPlot of TotalPay')
+plt.xlabel('TotalPay')
+
+print(' Opinion : There is too many outliers in the boxplot using default options.\n -> We can presume that there is leaning phenomenon in paying')
+plt.show()
+
+
+# Additional 2 : Top10 the most paid jobtitles
+div(17,'Additional Analysis 2 : Top10 the most paid jobtitles ')
+import numpy as np
+top10_paidJts = df_sal.groupby('JobTitle').mean()['TotalPayBenefits'].sort_values(ascending=False)[0:10].astype(int)
+print(top10_paidJts)
+
+sp()
+
+fig, ax = plt.subplots(figsize=(8,8))
+
+ax.bar(top10_paidJts.index.str.lower(),top10_paidJts.values,
+       color = 'red',alpha=0.5)
+plt.title('Additional Analysis 2 : Top10 the most paid jobtitles')
+
+plt.subplots_adjust(bottom=0.5)
+plt.xticks(rotation=75)
+print('Showing Top10 the most paid jobtitles...')
+plt.show()
+
+sp()
