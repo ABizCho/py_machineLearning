@@ -1,7 +1,10 @@
 '''
 Individual Assignment - 2
-
     Analyzing Salaries data
+    
+    Dep : E-BUSINESS
+    Num : 201823869 
+    Name: Seongwoo Cho
 '''
 def div(n,str) :
     print('\nㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ<   Result %d : %s   >ㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n'%(n,str))
@@ -41,10 +44,23 @@ print(df_sal.describe()) # summaries for describing
 
 # (4) Exploring missing values and outliers
 sp()
-print('Num of Not Provided : ', len(df_sal[df_sal['BasePay'] == 'Not Provided'])) # 'Not Provided' 값을 지닌 Data 개수 탐색 : 4개
+print('Num of Not Provided : ', len(df_sal[df_sal['BasePay'] == 'Not Provided'])) # Num of 'Not provided' : str
 
 sp()  
-print('Num of Na in BasePay : ',df_sal['BasePay'].isnull().sum()) # BasePay의 NA값 탐색 : 605개
+print('Num of Na in BasePay : ',df_sal['BasePay'].isnull().sum()) # Exploring BasePay's Missing values : 605
+
+
+# (5) Visualization : Boxplot of the TotalPay
+sp()
+plt.style.use('seaborn-dark')
+
+plt.boxplot(df_sal['TotalPay'], showmeans=True)
+plt.title('Exploring : BoxPlot of TotalPay')
+plt.xlabel('TotalPay')
+
+print(' Opinion : There is too many outliers in the boxplot using default options.\n -> We can presume that there is leaning phenomenon in TotalPay')
+plt.show()
+
 
 
 '''
@@ -54,17 +70,17 @@ div(1,'Cleaning')
 
 # (1) Excluding unnecessary columns
     # ref 
-        # 특정 컬럼 제외 : https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=wideeyed&logNo=221250746480
+        # Excluding certain columns : https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=wideeyed&logNo=221250746480
 df_sal = df_sal[df_sal.columns.difference(['Notes','Agency','Status'])]
 print('Selected Columns : ',df_sal.columns.values) 
 
-# (2) df_sal에서 Not Provided(str) 값 제외하여 저장
+# (2) Excluding Not provided(str) from the df_sal
 sp()
 df_sal = df_sal[df_sal['BasePay'] != 'Not Provided']
 print('Len of df_sal excluded Not Provided : ', len(df_sal))
 
-# (3) df_sal에서 na값은 무분별하게 제거했을 시 일부 문제에 error를 야기한다 
-    # 따라서 현재 시점에선 따로 처리하지 않고 향후 문제 풀이에서 필요에 따라 처리한다.
+# (3) Cleansing missing values from the df_sal could cause some errors, so if following parts need that, I'll handle with NA in that part.  
+
 
 '''
 Q1.
@@ -72,12 +88,14 @@ Generate texts with a couple of sentences that describe the data set based on yo
 '''
 div(2,'Q1')
 
-print('# 1. There is too many outliers in the boxplot made in my additional analysis part.')
-print('# 2. Q12-histogram is skewed to left. and Few people earned more than 200000.')
-print('# 3. Q14-bar chart show there is few people who are classified in "high class" , even in "medium class"')
-print('# 4. From 1, 2, and 3, we can presume that there is huge gap in paying.')
-print('# 5. Top3 the most paid jobtitle is "Chief Investment Officer","Chief of Police, and "Chief, Fire Department"')
-print('# 6. At least in my results of analysis like #5, the people whose jobtitle has the word "chief" tend to be paid more than others ')
+
+print('I explored and cleansed the data in the previous parts, and also I figured out some descriptive information')
+
+print('     1. The number of preprocessed records is 148654 ')
+print('     2. There are 13 attributes Id, EmployeeName, JobTitle, some PayInfo, and the others..')
+print('     3. The Year column has 4 years ranged from 2011 to 2014 for it\'s values.')
+print('     4. There are too many outliers in the boxplot made in my Exploring dataset part. the position of quantile-box and too many outliers which is located at topside of the plot imply that there is huge gap of distributions in paying.')
+
 
 
 '''
@@ -145,11 +163,10 @@ Q8.
 How many unique job titles can we see in the data set?
 '''
 div(9,'Q8')
+# unq_jt = df_sal.groupby('JobTitle')['Id'].count()[df_sal.groupby('JobTitle')['Id'].count() == 1] # 취합개수 1 여부 참거짓 에 따른 직업 반환
+unq_jt = df_sal['JobTitle'].nunique()
 
-unq_jt = df_sal.groupby('JobTitle')['Id'].count()[df_sal.groupby('JobTitle')['Id'].count() == 1] # 취합개수 1 여부 참거짓 에 따른 직업 반환
-# print(unq_jt.keys()) # 유니크 직업 인덱스 출력
-
-print('Num of Unique JobTitles : ', unq_jt.count()) # 개수 출력
+print('Num of Unique JobTitles : ', unq_jt) # 개수 출력
 
 
 '''
@@ -168,10 +185,12 @@ How many job titles were occupied by a single person only in 2013?
 '''
 div(11,'Q10')
 
-df_sal_2013 = df_sal[df_sal['Year'] == 2013]
+# df_sal_2013 = df_sal[df_sal['Year'] == 2013]
+# jt_ocpBySingle = df_sal_2013.groupby('JobTitle')['Id'].count()[df_sal_2013.groupby('JobTitle')['Id'].count() == 1]
 
-jt_ocpBySingle = df_sal_2013.groupby('JobTitle')['Id'].count()[df_sal_2013.groupby('JobTitle')['Id'].count() == 1]
-print('Num of Job titles occupied by a single person in 2013 : ', jt_ocpBySingle.count())
+jt_unq_2013 = df_sal[df_sal['Year']==2013]['JobTitle'].nunique()
+
+print('Num of Job titles occupied by a single person in 2013 : ', jt_unq_2013)
 
 
 '''
@@ -297,7 +316,6 @@ df_sal['pay_class'] = pd.cut(df_sal['TotalPay'],3, labels=['low','medium','high'
 df_sal_class = df_sal.groupby('pay_class')['pay_class'].count()
 
 ax[0].bar(df_sal_class.index.values,df_sal_class.values)
-
 ax[0].set_title('Way 1 : Dividing classes by default cut() options')
 
 
@@ -338,19 +356,7 @@ print('\nOpinion : I figured out the pd.cut() method runs similarly with my way2
 + Additional Analysis and Visualization
 '''
 
-# Additional 1 : Boxplot of TotalPay
-div(16,'Additional Analysis 1 : BoxPlot of TotalPay')
-plt.style.use('seaborn-dark')
-
-plt.boxplot(df_sal['TotalPay'], showmeans=True)
-plt.title('Additional Analysis 1 : BoxPlot of TotalPay')
-plt.xlabel('TotalPay')
-
-print(' Opinion : There is too many outliers in the boxplot using default options.\n -> We can presume that there is leaning phenomenon in paying')
-plt.show()
-
-
-# Additional 2 : Top10 the most paid jobtitles
+# Additional : Top10 the most paid jobtitles
 div(17,'Additional Analysis 2 : Top10 the most paid jobtitles ')
 import numpy as np
 top10_paidJts = df_sal.groupby('JobTitle').mean()['TotalPayBenefits'].sort_values(ascending=False)[0:10].astype(int)
@@ -369,4 +375,17 @@ plt.xticks(rotation=75)
 print('Showing Top10 the most paid jobtitles...')
 plt.show()
 
-sp()
+
+'''
+Comprehensive Analytic Insights
+'''
+div(18,'Comprehensive Analytic Insights')
+
+print('# 1. There are too many outliers in the boxplot made in my additional analysis part.')
+print('# 2. Q12-histogram is skewed to left. and Few people earned more than 200000.')
+print('# 3. Q14-bar chart show there is few people who are classified in "high class" , even in "medium class"')
+print('# 4. From 1, 2, and 3, we can presume that there is huge gap in paying.')
+print('# 5. Top3 the most paid jobtitle is "Chief Investment Officer","Chief of Police, and "Chief, Fire Department"')
+print('# 6. At least in my results of analysis like #5, the people whose jobtitle has the word "chief" tend to be paid more than others. \n\n')
+
+print('Thanks for your dedication\n')
