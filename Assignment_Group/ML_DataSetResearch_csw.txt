@@ -1,0 +1,36 @@
+<머신러닝 조별과제 데이터셋>
+
+1. 하 : Social Medai Influencers 
+ - 회사에서 홍보계정을 만들 때 어떤 카테고리로 만드는 것이 좋을까?
+ - DV : category
+https://www.kaggle.com/datasets/ramjasmaurya/top-1000-social-media-channels
+
+
+2. 중하 : Spotify top 50 songs in 2021 
+- 새로운 음반 발매를 앞두고 있다, 댄스성/에너지/키/시끄러움/모드 를 통해 가장
+효과적인 음반을 만들고자 한다, 어떻게 반영해야 할까?
+- DV: popularity
+https://www.kaggle.com/datasets/equinxx/spotify-top-50-songs-in-2021
+
+
+3. 상 : Laptop specifics and latest price
+- 신제품 랩탑 개발을 앞두고 있는 전자제품 회사이다.
+ * 랩탑의 가격결정 요인과 rate 결정 요인을 살펴보고
+ * 데이터를 바탕으로 classification을 실시하여 여러가지 포지셔닝 버블차트를 탐색
+해보고,
+ * 어떤 분류에 의한 포지션맵에서의, 어떤 위치에 포지셔닝 하는것이 가장 경쟁력
+있을지, 또한 
+ * 해당 포지션에서 가격<->리뷰 간 가장 효율적인 요인배합을 찾아서 이를 다음
+개발신작으로 선택한다.
+https://www.kaggle.com/datasets/kuchhbhi/latest-laptop-price-list?select=Cleaned_Laptop_data.csv
+
+
+4. ?? : Motor Vehicle Collisions - Crashes
+https://data.cityofnewyork.us/Public-Safety/Motor-Vehicle-Collisions-Crashes/h9gi-nx95
+
+
+5. 중? : Consumer Services Mediated Complaints
+https://data.cityofnewyork.us/Business/Consumer-Services-Mediated-Complaints/nre2-6m2s
+
+
+6. 
