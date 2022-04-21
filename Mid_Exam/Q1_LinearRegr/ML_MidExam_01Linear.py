@@ -15,7 +15,7 @@ os.chdir('C:\\Users\\he125\\OneDrive\\바탕 화면\\Dev\\Git\\py_machineLearnin
 df_pet = pd.read_csv('petrol_consumption.csv')
 
 '''
-Q1. 기술 통계 및 요약을 사용하여 데이터를 설명하라
+Q1. Descriptive statistics
 '''
 print('=====< Q1. Descriptive statistics >=====\n\n')
 
