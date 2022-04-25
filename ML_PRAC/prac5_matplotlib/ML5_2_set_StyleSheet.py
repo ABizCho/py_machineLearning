@@ -7,6 +7,11 @@ StyleSheet
     Ref :
         - 스타일시트 :   https://hong-yp-ml-records.tistory.com/88
         - 그 외 스타일 : https://teddylee777.github.io/visualization/matplotlib-tutorial
+        
+        + plot styling 참고
+            - style properties : https://matplotlib.org/_images/anatomy.png
+            - styling : https://teddylee777.github.io/visualization/matplotlib-tutorial
+
 '''
 from stylemod import *
 
